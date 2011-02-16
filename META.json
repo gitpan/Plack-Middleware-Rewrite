@@ -1,0 +1,35 @@
+{
+   "abstract" : "mod_rewrite for Plack",
+   "author" : [
+      "Aristotle Pagaltzis <pagaltzis@gmx.de>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.200004, CPAN::Meta::Converter version 2.101670",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Plack-Middleware-Rewrite",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.31"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "http://github.com/ap/Plack-Middleware-Rewrite/issues"
+      },
+      "homepage" : "http://github.com/ap/Plack-Middleware-Rewrite",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/ap/Plack-Middleware-Rewrite"
+      }
+   },
+   "version" : "1.0"
+}
