@@ -1,6 +1,6 @@
 package Plack::Middleware::Rewrite;
 BEGIN {
-  $Plack::Middleware::Rewrite::VERSION = '1.0';
+  $Plack::Middleware::Rewrite::VERSION = '1.001';
 }
 use strict;
 use parent qw( Plack::Middleware );
@@ -63,7 +63,7 @@ Plack::Middleware::Rewrite - mod_rewrite for Plack
 
 =head1 VERSION
 
-version 1.0
+version 1.001
 
 =head1 SYNOPSIS
 
