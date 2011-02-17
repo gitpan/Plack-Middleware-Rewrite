@@ -1,6 +1,6 @@
 package Plack::Middleware::Rewrite;
 BEGIN {
-  $Plack::Middleware::Rewrite::VERSION = '1.001';
+  $Plack::Middleware::Rewrite::VERSION = '1.002';
 }
 use strict;
 use parent qw( Plack::Middleware );
@@ -43,12 +43,12 @@ sub call {
 	}
 
 	my $res = $self->app->( $env );
+	return $res if not $modify_cb;
 
-	if ( $modify_cb ) {
-		$modify_cb->( $env ) for Plack::Util::headers( $res->[1] );
-	}
-
-	return $res;
+	Plack::Util::response_cb( $res, sub {
+		$modify_cb->( $env ) for Plack::Util::headers( $_[0][1] );
+		return;
+	} );
 }
 
 1;
@@ -63,7 +63,7 @@ Plack::Middleware::Rewrite - mod_rewrite for Plack
 
 =head1 VERSION
 
-version 1.001
+version 1.002
 
 =head1 SYNOPSIS
 
