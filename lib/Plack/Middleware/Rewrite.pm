@@ -1,6 +1,6 @@
 package Plack::Middleware::Rewrite;
-BEGIN {
-  $Plack::Middleware::Rewrite::VERSION = '1.003';
+{
+  $Plack::Middleware::Rewrite::VERSION = '1.004';
 }
 use strict;
 use parent qw( Plack::Middleware );
@@ -10,7 +10,6 @@ use parent qw( Plack::Middleware );
 use Plack::Util::Accessor qw( rules );
 use Plack::Request ();
 use Plack::Util ();
-use URI ();
 
 sub call {
 	my $self = shift;
@@ -21,30 +20,34 @@ sub call {
 
 	my $modify_cb;
 
-	for ( $env->{'PATH_INFO'} ) {
-		my $res = $self->rules->( $env ) or last;
+	# call rules with $_ aliased to PATH_INFO
+	my ( $res ) = map { $self->rules->( $env ) } $env->{'PATH_INFO'};
 
-		$modify_cb = $res if 'CODE' eq ref $res;
-
-		$res = [ $res ] if not ref $res and $res =~ /\A[1-5][0-9][0-9]\z/;
-
-		last if 'ARRAY' ne ref $res or @$res < 1;
-
+	# return value fixup
+	if ( 'CODE' eq ref $res ) {
+		$modify_cb = $res;
+		undef $res;
+	}
+	elsif ( 'ARRAY' eq ref $res and @$res ) {
 		push @$res, [] if @$res < 2;
 		push @$res, [] if @$res < 3;
-
-		if ( $res->[0] =~ /\A3[0-9][0-9]\z/ ) {
-			my $req_base = Plack::Request->new( $env )->uri;
-			my $abs_dest = URI->new_abs( $_, $req_base );
-			Plack::Util::header_set( $res->[1], Location => $abs_dest );
-		}
-
-		return $res;
+	}
+	elsif ( not ref $res and defined $res and $res =~ /\A[1-5][0-9][0-9]\z/ ) {
+		$res = [ $res, [], [] ];
+	}
+	else {
+		undef $res;
 	}
 
-	my $res = $self->app->( $env );
-	return $res if not $modify_cb;
+	if ( not $res ) { # redirect was internal
+		$res = $self->app->( $env );
+	}
+	elsif ( $res->[0] =~ /\A3[0-9][0-9]\z/ ) {
+		my $dest = Plack::Request->new( $env )->uri;
+		Plack::Util::header_set( $res->[1], Location => $dest );
+	}
 
+	return $res if not $modify_cb;
 	Plack::Util::response_cb( $res, sub {
 		$modify_cb->( $env ) for Plack::Util::headers( $_[0][1] );
 		return;
@@ -63,7 +66,7 @@ Plack::Middleware::Rewrite - mod_rewrite for Plack
 
 =head1 VERSION
 
-version 1.003
+version 1.004
 
 =head1 SYNOPSIS
 
@@ -79,6 +82,8 @@ version 1.003
              or s{^/baz/?$}{/quux/};
 
          return 201 if $_ eq '/favicon.ico';
+
+         return 503 if -e '/path/to/app/maintenance.lock';
 
          return [200, [qw(Content-Type text/plain)], ['You found it!']]
             if $_ eq '/easter-egg';

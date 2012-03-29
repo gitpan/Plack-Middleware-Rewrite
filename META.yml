@@ -7,10 +7,11 @@ build_requires:
   Plack::Builder: 0
   Plack::Test: 0
   Test::More: 0
+  warnings: 0
 configure_requires:
-  ExtUtils::MakeMaker: 6.31
+  ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.200004, CPAN::Meta::Converter version 2.101670'
+generated_by: 'Dist::Zilla version 4.300010, CPAN::Meta::Converter version 2.120630'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -22,10 +23,10 @@ requires:
   Plack::Request: 0
   Plack::Util: 0
   Plack::Util::Accessor: 0
-  URI: 0
   parent: 0
+  strict: 0
 resources:
   bugtracker: http://github.com/ap/Plack-Middleware-Rewrite/issues
   homepage: http://github.com/ap/Plack-Middleware-Rewrite
   repository: git://github.com/ap/Plack-Middleware-Rewrite
-version: 1.003
+version: 1.004
