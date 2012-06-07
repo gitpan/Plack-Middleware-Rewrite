@@ -1,6 +1,6 @@
 package Plack::Middleware::Rewrite;
 {
-  $Plack::Middleware::Rewrite::VERSION = '1.004';
+  $Plack::Middleware::Rewrite::VERSION = '1.005';
 }
 use strict;
 use parent qw( Plack::Middleware );
@@ -43,8 +43,10 @@ sub call {
 		$res = $self->app->( $env );
 	}
 	elsif ( $res->[0] =~ /\A3[0-9][0-9]\z/ ) {
-		my $dest = Plack::Request->new( $env )->uri;
-		Plack::Util::header_set( $res->[1], Location => $dest );
+		if ( not Plack::Util::header_exists( $res->[1], 'Location' ) ) {
+			my $dest = Plack::Request->new( $env )->uri;
+			Plack::Util::header_set( $res->[1], Location => $dest );
+		}
 	}
 
 	return $res if not $modify_cb;
@@ -66,7 +68,7 @@ Plack::Middleware::Rewrite - mod_rewrite for Plack
 
 =head1 VERSION
 
-version 1.004
+version 1.005
 
 =head1 SYNOPSIS
 
@@ -111,7 +113,7 @@ almost anything is possible very easily.
 C<rules> takes a reference to a function that will be called on each request.
 When it is, the C<PATH_INFO> is aliased to C<$_>, so that you can easily use
 regexp matches and subtitutions to examine and modify it. The L<PSGI>
-envrionment will be passed as its first and only argument. The function can
+environment will be passed as its first and only argument. The function can
 return four (and a half) kinds of values:
 
 =over 4
