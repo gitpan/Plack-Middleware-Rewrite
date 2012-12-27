@@ -1,6 +1,6 @@
 package Plack::Middleware::Rewrite;
 {
-  $Plack::Middleware::Rewrite::VERSION = '1.005';
+  $Plack::Middleware::Rewrite::VERSION = '1.006';
 }
 use strict;
 use parent qw( Plack::Middleware );
@@ -14,9 +14,6 @@ use Plack::Util ();
 sub call {
 	my $self = shift;
 	my ( $env ) = @_;
-
-	local $env->{'QUERY_STRING'} = $env->{'QUERY_STRING'};
-	local $env->{'PATH_INFO'}    = $env->{'PATH_INFO'};
 
 	my $modify_cb;
 
@@ -58,7 +55,7 @@ sub call {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -68,7 +65,7 @@ Plack::Middleware::Rewrite - mod_rewrite for Plack
 
 =head1 VERSION
 
-version 1.005
+version 1.006
 
 =head1 SYNOPSIS
 
@@ -171,7 +168,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-
