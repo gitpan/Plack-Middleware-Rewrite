@@ -1,11 +1,11 @@
 
 
 This archive contains the distribution Plack-Middleware-Rewrite,
-version 1.006:
+version 1.007:
 
   mod_rewrite for Plack
 
-This software is copyright (c) 2011 by Aristotle Pagaltzis.
+This software is copyright (c) 2013 by Aristotle Pagaltzis.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

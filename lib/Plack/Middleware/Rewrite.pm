@@ -1,6 +1,6 @@
 package Plack::Middleware::Rewrite;
 {
-  $Plack::Middleware::Rewrite::VERSION = '1.006';
+  $Plack::Middleware::Rewrite::VERSION = '1.007';
 }
 use strict;
 use parent qw( Plack::Middleware );
@@ -10,6 +10,8 @@ use parent qw( Plack::Middleware );
 use Plack::Util::Accessor qw( rules );
 use Plack::Request ();
 use Plack::Util ();
+
+my %is_redir = map {; $_ => 1 } qw( 301 302 303 307 );
 
 sub call {
 	my $self = shift;
@@ -40,9 +42,19 @@ sub call {
 		$res = $self->app->( $env );
 	}
 	elsif ( $res->[0] =~ /\A3[0-9][0-9]\z/ ) {
-		if ( not Plack::Util::header_exists( $res->[1], 'Location' ) ) {
-			my $dest = Plack::Request->new( $env )->uri;
+		my $dest = Plack::Util::header_get( $res->[1], 'Location' );
+		if ( not $dest ) {
+			$dest = Plack::Request->new( $env )->uri;
 			Plack::Util::header_set( $res->[1], Location => $dest );
+		}
+
+		if ( 304 ne $res->[0] and not (
+			Plack::Util::content_length( $res->[2] )
+			or Plack::Util::header_exists( $res->[1], 'Content-Length' )
+		) ) {
+			my $href = Plack::Util::encode_html( $dest );
+			Plack::Util::header_set( $res->[1], qw( Content-Type text/html ) );
+			$res->[2] = [ qq'<!DOCTYPE html><title>Moved</title>This resource has moved to <a href="$href">a new address</a>.' ];
 		}
 	}
 
@@ -65,7 +77,7 @@ Plack::Middleware::Rewrite - mod_rewrite for Plack
 
 =head1 VERSION
 
-version 1.006
+version 1.007
 
 =head1 SYNOPSIS
 
@@ -162,7 +174,7 @@ Aristotle Pagaltzis <pagaltzis@gmx.de>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Aristotle Pagaltzis.
+This software is copyright (c) 2013 by Aristotle Pagaltzis.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
