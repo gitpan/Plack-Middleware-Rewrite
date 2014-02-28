@@ -1,6 +1,6 @@
 package Plack::Middleware::Rewrite;
 {
-  $Plack::Middleware::Rewrite::VERSION = '1.007';
+  $Plack::Middleware::Rewrite::VERSION = '1.008';
 }
 use strict;
 use parent qw( Plack::Middleware );
@@ -77,7 +77,7 @@ Plack::Middleware::Rewrite - mod_rewrite for Plack
 
 =head1 VERSION
 
-version 1.007
+version 1.008
 
 =head1 SYNOPSIS
 
@@ -174,7 +174,7 @@ Aristotle Pagaltzis <pagaltzis@gmx.de>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Aristotle Pagaltzis.
+This software is copyright (c) 2014 by Aristotle Pagaltzis.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
